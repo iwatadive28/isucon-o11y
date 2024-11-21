@@ -6,6 +6,7 @@
 - pprotein: 各種ログの統計情報の管理・閲覧
 - prometheus: メトリクスの収集・閲覧 node-exporter, process-exporterを導入
 - jaeger: トレースの収集・閲覧
+- PHPMyAdmin: MySQLの中身の閲覧用
 
 
 
@@ -47,3 +48,8 @@ slowlog以外のところはチューニングにも関与する。
 
 同上。  
 ログ出力形式以外。
+
+### 任意: docker-compose.yaml -> services/phpadmin/environment/PMA_HOST
+
+PHPMyAdminを使うときに、接続しにかかるサーバのアドレスを記入
+ただし、mysql側のログイン設定でo11yを受け付ける設定になってるかどうかわからないので、状況に応じてisucon-o11yからアクセスできるようにすること。
