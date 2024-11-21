@@ -13,7 +13,7 @@ for IP in "${IP_LIST[@]}"; do
   echo "Setting up Tailscale on ${HOSTNAME} (${IP})..."
 
   # SSHで接続し、Tailscaleをインストールしてホスト名で参加
-  ssh -i "$SSH_KEY_PATH" "${SSH_USER}"@$IP << EOF
+  ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "${SSH_USER}"@$IP << EOF
     curl -fsSL https://tailscale.com/install.sh | sh
     sudo tailscale up --authkey=${TAILSCALE_AUTH_KEY} --hostname=${HOSTNAME}
     sudo systemctl enable --now tailscaled
