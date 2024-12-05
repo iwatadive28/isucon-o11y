@@ -1,0 +1,1 @@
+{"pathname":"A/AR/ARODLAND/Digest-HMAC-1.04.tar.gz","dist":"Digest-HMAC-1.04","provides":{"Digest::HMAC":{"file":"lib/Digest/HMAC.pm","version":"1.04"},"Digest::HMAC_SHA1":{"version":"1.04","file":"lib/Digest/HMAC_SHA1.pm"},"Digest::HMAC_MD5":{"file":"lib/Digest/HMAC_MD5.pm","version":"1.04"}},"target":"Digest::HMAC","version":"1.04","name":"Digest::HMAC"}

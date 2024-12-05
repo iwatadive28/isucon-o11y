@@ -1,0 +1,1 @@
+{"dist":"POSIX-strftime-Compiler-0.45","pathname":"K/KA/KAZEBURO/POSIX-strftime-Compiler-0.45.tar.gz","provides":{"POSIX::strftime::Compiler":{"file":"lib/POSIX/strftime/Compiler.pm","version":"0.45"}},"version":"0.45","name":"POSIX::strftime::Compiler","target":"POSIX::strftime::Compiler"}

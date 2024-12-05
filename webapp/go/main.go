@@ -117,7 +117,31 @@ func initializeHandler(c echo.Context) error {
 		Language: "golang",
 	})
 }
+/*
+func initializeHandler(c echo.Context) error {
+	// `init.sh`スクリプトを実行
+	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
+		// エラーが発生した場合、ログにエラーメッセージを出力し、HTTP 500エラーを返す
+		c.Logger().Warnf("init.sh failed with err=%s", string(out))
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+	}
 
+	// `init.sh`が成功した場合、プロジェクトが起動したことを知らせるメッセージを追加
+	if out, err := exec.Command("echo", "Protain initialized successfully in Codespaces").CombinedOutput(); err != nil {
+		// 初期化通知が失敗した場合に警告を出力
+		c.Logger().Warnf("Failed to notify protain: %s", string(out))
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to notify protain: "+err.Error())
+	}
+
+	// 必要なHTTPヘッダを設定
+	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
+
+	// 成功した場合、レスポンスとしてJSONを返す
+	return c.JSON(http.StatusOK, InitializeResponse{
+		Language: "golang",
+	})
+}
+*/
 func main() {
 	e := echo.New()
 	e.Debug = true
