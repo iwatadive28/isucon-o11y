@@ -2,19 +2,19 @@
   {
     "Type": "pprof",
     "Label": "web",
-    "URL": "http://52.68.122.251:8080/debug/pprof/profile",
+    "URL": "http://3.112.3.216:19001/debug/pprof/profile",
     "Duration": 70
   },
   {
     "Type": "httplog",
     "Label": "nginx",
-    "URL": "http://52.68.122.251:19000/debug/log/httplog",
+    "URL": "http://3.112.3.216:19000/debug/log/httplog",
     "Duration": 70
   },
   {
     "Type": "slowlog",
     "Label": "mysql",
-    "URL": "http://52.68.122.251:19000/debug/log/slowlog",
+    "URL": "http://3.112.3.216:19000/debug/log/slowlog",
     "Duration": 70
   }
 ]

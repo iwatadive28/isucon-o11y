@@ -19,6 +19,7 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
+	"github.com/kaz/pprotein/integration/standalone"
 	echolog "github.com/labstack/gommon/log"
 )
 
@@ -111,7 +112,15 @@ func initializeHandler(c echo.Context) error {
 		c.Logger().Warnf("init.sh failed with err=%s", string(out))
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
 	}
-
+	// ここに追加
+	go func() {
+		// if _, err := http.Get("(codespaces-forwarded-port)/api/group/collect"); err != nil {
+		// 	log.Printf("failed to communicate with pprotein: %v", err)
+		// }
+		if _, err := http.Get("https://ominous-zebra-j76r5v65gp5hpjq6-9000.app.github.dev/api/group/collect"); err != nil {
+			log.Printf("failed to communicate with pprotein: %v", err)
+		}
+	}()
 	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
 	return c.JSON(http.StatusOK, InitializeResponse{
 		Language: "golang",
@@ -202,11 +211,14 @@ func main() {
 	// stats
 	// ライブ配信統計情報
 	e.GET("/api/livestream/:livestream_id/statistics", getLivestreamStatisticsHandler)
-
+	
 	// 課金情報
 	e.GET("/api/payment", GetPaymentResult)
 
 	e.HTTPErrorHandler = errorResponseHandler
+
+	// 8080ポートを開く for pprotain
+	go standalone.Integrate(":19001")
 
 	// DB接続
 	conn, err := connectDB(e.Logger)
