@@ -31,3 +31,10 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
+
+  phpadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+     PMA_HOST: "isucon-server1"
+    ports:
+      - "8080:80"
