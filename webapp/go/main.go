@@ -13,13 +13,14 @@ import (
 	"strconv"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/isucon/isucon13/webapp/go/isuutil"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/gorilla/sessions"
-	"github.com/labstack/echo-contrib/session"
 	"github.com/kaz/pprotein/integration/standalone"
+	"github.com/labstack/echo-contrib/session"
 	echolog "github.com/labstack/gommon/log"
 )
 
@@ -112,7 +113,8 @@ func initializeHandler(c echo.Context) error {
 		c.Logger().Warnf("init.sh failed with err=%s", string(out))
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
 	}
-	// ここに追加
+
+	// pprotain ここに追加
 	go func() {
 		// if _, err := http.Get("(codespaces-forwarded-port)/api/group/collect"); err != nil {
 		// 	log.Printf("failed to communicate with pprotein: %v", err)
@@ -121,35 +123,44 @@ func initializeHandler(c echo.Context) error {
 			log.Printf("failed to communicate with pprotein: %v", err)
 		}
 	}()
-	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
-	return c.JSON(http.StatusOK, InitializeResponse{
-		Language: "golang",
-	})
-}
-/*
-func initializeHandler(c echo.Context) error {
-	// `init.sh`スクリプトを実行
-	if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
-		// エラーが発生した場合、ログにエラーメッセージを出力し、HTTP 500エラーを返す
-		c.Logger().Warnf("init.sh failed with err=%s", string(out))
+
+	// インデックスを貼る
+	if err := isuutil.CreateIndexIfNotExists(dbConn, "create index livestream_tags_tag_id_index\n    on livestream_tags (tag_id);\n\n"); err != nil {
+		c.Logger().Errorf("create index failed with err=%s", err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
 	}
 
-	// `init.sh`が成功した場合、プロジェクトが起動したことを知らせるメッセージを追加
-	if out, err := exec.Command("echo", "Protain initialized successfully in Codespaces").CombinedOutput(); err != nil {
-		// 初期化通知が失敗した場合に警告を出力
-		c.Logger().Warnf("Failed to notify protain: %s", string(out))
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to notify protain: "+err.Error())
-	}
-
-	// 必要なHTTPヘッダを設定
 	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
-
-	// 成功した場合、レスポンスとしてJSONを返す
 	return c.JSON(http.StatusOK, InitializeResponse{
 		Language: "golang",
 	})
+
 }
+
+/*
+	func initializeHandler(c echo.Context) error {
+		// `init.sh`スクリプトを実行
+		if out, err := exec.Command("../sql/init.sh").CombinedOutput(); err != nil {
+			// エラーが発生した場合、ログにエラーメッセージを出力し、HTTP 500エラーを返す
+			c.Logger().Warnf("init.sh failed with err=%s", string(out))
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
+		}
+
+		// `init.sh`が成功した場合、プロジェクトが起動したことを知らせるメッセージを追加
+		if out, err := exec.Command("echo", "Protain initialized successfully in Codespaces").CombinedOutput(); err != nil {
+			// 初期化通知が失敗した場合に警告を出力
+			c.Logger().Warnf("Failed to notify protain: %s", string(out))
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to notify protain: "+err.Error())
+		}
+
+		// 必要なHTTPヘッダを設定
+		c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
+
+		// 成功した場合、レスポンスとしてJSONを返す
+		return c.JSON(http.StatusOK, InitializeResponse{
+			Language: "golang",
+		})
+	}
 */
 func main() {
 	e := echo.New()
@@ -211,7 +222,7 @@ func main() {
 	// stats
 	// ライブ配信統計情報
 	e.GET("/api/livestream/:livestream_id/statistics", getLivestreamStatisticsHandler)
-	
+
 	// 課金情報
 	e.GET("/api/payment", GetPaymentResult)
 
